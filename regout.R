@@ -301,12 +301,6 @@ var_labels = function(result, var_list) {
   result
 }
 
-key_value = function(lst) {
-  kv = Map(function(x, y) list(key = x, value = y), names(lst), lst)
-  names(kv) = NULL
-  kv
-}
-
 output_latex = function(result) {
   attrs = attributes(result)
   ncols = ncol(result)
