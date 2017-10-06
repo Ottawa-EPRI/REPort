@@ -10,7 +10,7 @@ output_latex <- function(result) {
           function(x) {
             if (x != '') sprintf('\\multicolumn{1}{c}{%s}', x) else x
           },
-          sanitize(result[i, ])
+          xtable::sanitize(result[i, ])
         )),
         collapse <- ' & '
       )
@@ -19,14 +19,14 @@ output_latex <- function(result) {
   }
 
   preamble <- c(
-    sprintf('\\begin{longtable}{l%s}',
-            rep('D{.}{.}{6}', ncols - 1) %>% paste0(collapse = '')),
-    sprintf('\\caption{%s}',  sanitize(attrs$caption)),
-    sprintf('\\label{%s} \\\\',  sanitize(attrs$caption)),
+    paste0(sprintf('\\begin{longtable}{l%s}',
+           rep('D{.}{.}{6}', ncols - 1), collapse = '')),
+    sprintf('\\caption{%s}',  xtable::sanitize(attrs$caption)),
+    sprintf('\\label{%s} \\\\',  xtable::sanitize(attrs$caption)),
     header,
     '\\endfirsthead',
     sprintf('\\caption*{%s} \\\\',
-            sanitize(paste(attrs$caption, '(Continued)'))),
+            xtable::sanitize(paste(attrs$caption, '(Continued)'))),
     header,
     '\\endhead',
     '\\bottomrule',
@@ -39,7 +39,7 @@ output_latex <- function(result) {
 
   for (i in (attrs$heading_rows + 1):nrow(result)) {
     row <- result[i, ]
-    row <- sanitize(row)
+    row <- xtable::sanitize(row)
 
     row <- unlist(Map(
       function(x) {
@@ -76,7 +76,7 @@ output_latex <- function(result) {
     row <- add_multicolumn[attrs$colspan[i, ] > 0]
     row <- gsub(' (\\*+)$', '^{\\1}', row)
 
-    if (all(top_padding(result)[i, ] == 30)) {
+    if (all(attributes(result[i, ])$top_padding == 30)) {
       row[1] <- paste0('\\noalign{\\vskip 4mm}', row[1])
     }
 
