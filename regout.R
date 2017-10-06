@@ -36,11 +36,9 @@ regout <- function(..., heading_rows = 1) {
 
 huxtable_headrow <- function(hux_table, heading) {
   ncols <- ncol(hux_table)
-  heading_row <- c(
+  heading_row <- as.data.frame(as.list(c(
     sprintf('<<HEADING>>%s<</HEADING>>', heading), rep(NA, ncols - 1)
-  ) %>%
-    as.list() %>%
-    as.data.frame()
+  )))
 
    heading_huxtable <- huxtable(heading_row)
    italic(heading_huxtable)[1, 1] <- TRUE
@@ -57,12 +55,12 @@ base_vars <- function(result, no_binary_heading = TRUE) {
   term_labels <- attributes(result)$term_labels
 
   xlevels_names_rev_sort <- xlevels_names[
-    nchar(xlevels_names) %>% order(xlevels_names, decreasing = TRUE)
+    order(nchar(xlevels_names), xlevels_names, decreasing = TRUE)
   ]
 
   interactions <- grep('^.*\\S:.*$', term_labels)
   if (length(interactions > 0)) {
-    interaction_list <- term_labels[interactions] %>% strsplit(':')
+    interaction_list <- strsplit(term_labels[interactions], ':')
 
     for (interaction in interaction_list) {
       interaction_xlevels <- xlevels[interaction]
@@ -141,7 +139,7 @@ base_vars <- function(result, no_binary_heading = TRUE) {
 
 add_reg_labels <- function(result, var_list) {
   var_list_ordered <- var_list[
-    names(var_list) %>% nchar() %>% order(names(var_list), decreasing = TRUE)
+    order(nchar(names(var_list)), names(var_list), decreasing = TRUE)
   ]
 
   for (el in key_value(var_list_ordered)) {
