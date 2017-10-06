@@ -14,7 +14,7 @@ regout <- function(..., heading_rows = 1) {
 
   hux_table <- do.call(huxtable::huxreg, c(model_args, options))
 
-  huxtable::tabular_environment(hux_table) <- 'longtable'
+  hux_table <- huxtable::set_tabular_environment(hux_table, 'longtable')
 
   model_xlevels <- Map(function(x) x[['xlevels']], model_args)
   if (length(model_xlevels == 1)) {
@@ -48,7 +48,7 @@ huxtable_headrow <- function(hux_table, heading) {
    heading_huxtable
 }
 
-base_vars <- function(result, no_binary_heading = TRUE) {
+add_base_vars <- function(result, no_binary_heading = TRUE) {
   xlevels <- attributes(result)$xlevels
   xlevels_names <- names(xlevels)
   base_levels <- Map(function(x) x[[1]], xlevels)
