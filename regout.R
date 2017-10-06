@@ -40,12 +40,14 @@ huxtable_headrow <- function(hux_table, heading) {
     sprintf('<<HEADING>>%s<</HEADING>>', heading), rep(NA, ncols - 1)
   )))
 
-   heading_huxtable <- huxtable(heading_row)
-   italic(heading_huxtable)[1, 1] <- TRUE
-   colspan(heading_huxtable)[1, 1] <- ncols
-   colspan(heading_huxtable)[1, 2:ncols] <- 0
-   top_padding(heading_huxtable) <- 30
-   heading_huxtable
+  heading_huxtable <- huxtable::huxtable(heading_row)
+  huxtable::set_italic(heading_huxtable[1, 1], TRUE)
+  # Note that while there is a function within huxtable to set the colspan,
+  # it will _not_ work as we intend. We will therefore override manually.
+  attributes(heading_huxtable)$colspan[1, 1] <- ncols
+  attributes(heading_huxtable)$colspan[1, 2:ncols] <- 0
+  huxtable::set_top_padding(heading_huxtable, 30)
+  heading_huxtable
 }
 
 add_base_vars <- function(result, no_binary_heading = TRUE) {
