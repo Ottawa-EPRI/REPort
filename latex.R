@@ -1,24 +1,24 @@
-output_latex = function(result) {
-  attrs = attributes(result)
-  ncols = ncol(result)
+output_latex <- function(result) {
+  attrs <- attributes(result)
+  ncols <- ncol(result)
   # FIXME: This assumes the longtable dcolumn environment. We may want some
   #        options here, although not necessarily for regression output.
-  header = ''
+  header <- ''
   for (i in 1:attrs$heading_rows) {
-    current_header = paste0(
+    current_header <- paste0(
         unlist(Map(
           function(x) {
             if (x != '') sprintf('\\multicolumn{1}{c}{%s}', x) else x
           },
           sanitize(result[i, ])
         )),
-        collapse = ' & '
+        collapse <- ' & '
       )
-    current_header = paste(current_header, '\\\\ \\midrule')
-    header = c(header, current_header)
+    current_header <- paste(current_header, '\\\\ \\midrule')
+    header <- c(header, current_header)
   }
 
-  preamble = c(
+  preamble <- c(
     sprintf('\\begin{longtable}{l%s}',
             rep('D{.}{.}{6}', ncols - 1) %>% paste0(collapse = '')),
     sprintf('\\caption{%s}',  sanitize(attrs$caption)),
@@ -35,13 +35,13 @@ output_latex = function(result) {
     '\\endlastfoot'
   )
 
-  output = preamble
+  output <- preamble
 
   for (i in (attrs$heading_rows + 1):nrow(result)) {
-    row = result[i, ]
-    row = sanitize(row)
+    row <- result[i, ]
+    row <- sanitize(row)
 
-    row = unlist(Map(
+    row <- unlist(Map(
       function(x) {
         if (!is.na(x) & substr(x, 1, 1) == '(') {
           paste0('\\hbox{}', x)
@@ -53,7 +53,7 @@ output_latex = function(result) {
       USE.NAMES = FALSE
     ))
 
-    row = unlist(Map(
+    row <- unlist(Map(
       function(value, attribute) {
         if (attribute) sprintf('\\emph{%s}', value) else value
       },
@@ -61,7 +61,7 @@ output_latex = function(result) {
       attrs$italic[i, ]
     ))
 
-    add_multicolumn = unlist(Map(
+    add_multicolumn <- unlist(Map(
       function(value, attribute) {
         if (attribute > 1) {
           sprintf('\\multicolumn{%s}{l}{%s}', attribute, value)
@@ -73,30 +73,30 @@ output_latex = function(result) {
       attrs$colspan[i, ]
     ))
 
-    row = add_multicolumn[attrs$colspan[i, ] > 0]
-    row = gsub(' (\\*+)$', '^{\\1}', row)
+    row <- add_multicolumn[attrs$colspan[i, ] > 0]
+    row <- gsub(' (\\*+)$', '^{\\1}', row)
 
     if (all(top_padding(result)[i, ] == 30)) {
-      row[1] = paste0('\\noalign{\\vskip 4mm}', row[1])
+      row[1] <- paste0('\\noalign{\\vskip 4mm}', row[1])
     }
 
-    row = paste(row, collapse = ' & ')
-    row = paste(row, '\\\\')
-    row = gsub('NA', '', row, fixed = TRUE)
+    row <- paste(row, collapse = ' & ')
+    row <- paste(row, '\\\\')
+    row <- gsub('NA', '', row, fixed = TRUE)
 
-    add_bottom_border = all(attrs$bottom_border[i, ] == 1)
+    add_bottom_border <- all(attrs$bottom_border[i, ] == 1)
     if (add_bottom_border) {
-      row = paste0(row, ' \\midrule')
+      row <- paste0(row, ' \\midrule')
     }
 
-    output = append(output, row)
+    output <- append(output, row)
   }
 
-  output = append(output, '\\end{longtable}')
+  output <- append(output, '\\end{longtable}')
   unlist(output)
 }
 
-add_latex_preamble = function(output) {
+add_latex_preamble <- function(output) {
   c(
     '\\documentclass[10pt]{article}',
     '\\usepackage{booktabs}',
@@ -115,7 +115,7 @@ add_latex_preamble = function(output) {
   )
 }
 
-add_latex_end = function(output) {
+add_latex_end <- function(output) {
   c(
     output,
     '',
@@ -124,7 +124,7 @@ add_latex_end = function(output) {
   )
 }
 
-add_latex_pagebreak = function(output) {
+add_latex_pagebreak <- function(output) {
   c(
     output,
     '',
