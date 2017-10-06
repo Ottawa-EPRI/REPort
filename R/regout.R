@@ -5,6 +5,21 @@ convert_names_from_null <- function(x) {
   x
 }
 
+huxtable_headrow <- function(ht, heading) {
+  ncols <- ncol(ht)
+  heading_row <- as.data.frame(as.list(c(
+    sprintf('<<HEADING>>%s<</HEADING>>', heading), rep(NA, ncols - 1)
+  )))
+
+  heading_huxtable <- huxtable::huxtable(heading_row)
+  huxtable::set_italic(heading_huxtable[1, 1], TRUE)
+  # Note that while there is a function within huxtable to set the colspan,
+  # it will _not_ work as we intend. We will therefore override manually.
+  attributes(heading_huxtable)$colspan[1, 1] <- ncols
+  attributes(heading_huxtable)$colspan[1, 2:ncols] <- 0
+  huxtable::set_top_padding(heading_huxtable, 30)
+  heading_huxtable
+}
 regout <- function(..., heading_rows = 1) {
   args <- convert_names_from_null(list(...))
   unnamed_args <- names(args) == ''
@@ -34,21 +49,6 @@ regout <- function(..., heading_rows = 1) {
   hux_table
 }
 
-huxtable_headrow <- function(hux_table, heading) {
-  ncols <- ncol(hux_table)
-  heading_row <- as.data.frame(as.list(c(
-    sprintf('<<HEADING>>%s<</HEADING>>', heading), rep(NA, ncols - 1)
-  )))
-
-  heading_huxtable <- huxtable::huxtable(heading_row)
-  huxtable::set_italic(heading_huxtable[1, 1], TRUE)
-  # Note that while there is a function within huxtable to set the colspan,
-  # it will _not_ work as we intend. We will therefore override manually.
-  attributes(heading_huxtable)$colspan[1, 1] <- ncols
-  attributes(heading_huxtable)$colspan[1, 2:ncols] <- 0
-  huxtable::set_top_padding(heading_huxtable, 30)
-  heading_huxtable
-}
 
 add_base_vars <- function(result, no_binary_heading = TRUE) {
   xlevels <- attributes(result)$xlevels
