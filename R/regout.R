@@ -71,12 +71,11 @@ regout <- function(..., heading_rows = 1) {
 #'
 #' @export
 #'
-
-add_base_vars <- function(result, no_binary_heading = TRUE) {
-  xlevels <- attributes(result)$xlevels
+add_base_vars <- function(ht, no_binary_heading = TRUE) {
+  xlevels <- attributes(ht)$xlevels
   xlevels_names <- names(xlevels)
   base_levels <- Map(function(x) x[[1]], xlevels)
-  term_labels <- attributes(result)$term_labels
+  term_labels <- attributes(ht)$term_labels
 
   xlevels_names_rev_sort <- xlevels_names[
     order(nchar(xlevels_names), xlevels_names, decreasing = TRUE)
@@ -101,7 +100,7 @@ add_base_vars <- function(result, no_binary_heading = TRUE) {
       rx_seek <- paste0(interaction_rx, collapse = ':')
       rx_seek <- paste0('^', rx_seek, '$')
 
-      min_location <- min(grep(rx_seek, result[[1]]))
+      min_location <- min(grep(rx_seek, ht[[1]]))
 
       interact_base_add_omit <- Map(
         function(lst, name) sprintf('%s (%s)', name, lst),
@@ -117,48 +116,48 @@ add_base_vars <- function(result, no_binary_heading = TRUE) {
 
       # FIXME: no_binary_heading logic correct? Shoud padding be an option?
       if (all(Map(length, interaction_xlevels) <= 2) & no_binary_heading) {
-        top_padding(result[min_location, ]) <- 30
+        top_padding(ht[min_location, ]) <- 30
       } else {
-      #if (any(Map(length, interaction_xlevels) > 2) & no_binary_heading) {
-        result <- rbind(
-          result[1:min_location - 1,],
-          huxtable_headrow(result, interact_heading),
-          result[min_location:nrow(result),]
+        #if (any(Map(length, interaction_xlevels) > 2) & no_binary_heading) {
+        ht <- rbind(
+          ht[1:min_location - 1,],
+          huxtable_headrow(ht, interact_heading),
+          ht[min_location:nrow(ht),]
         )
       }
 
       num_interactors <- length(interaction)
-      result[[1]] <- gsub(
+      ht[[1]] <- gsub(
         rx_seek,
         paste0('\\', 1:num_interactors, collapse = ' * '),
-        result[[1]]
+        ht[[1]]
       )
     }
   }
 
   for (var in xlevels_names_rev_sort) {
     rx_seek <- paste0('^', Hmisc::escapeRegex(var), '(.*)$')
-    min_location <- min(grep(rx_seek, result[[1]]))
-    result[[1]] <- gsub(rx_seek, '\\1', result[[1]])
+    min_location <- min(grep(rx_seek, ht[[1]]))
+    ht[[1]] <- gsub(rx_seek, '\\1', ht[[1]])
 
     if (length(xlevels[[var]]) <= 2 & no_binary_heading) {
-      top_padding(result[min_location, ]) <- 30
+      top_padding(ht[min_location, ]) <- 30
     }
     # FIXME: no_binary_heading logic correct? Padding as an option?
     if (length(xlevels[[var]]) > 2 & no_binary_heading) {
-      result <- rbind(
-        result[1:min_location - 1,],
+      ht <- rbind(
+        ht[1:min_location - 1,],
         huxtable_headrow(
-          result, sprintf('%s (%s)', names(base_levels[var]), base_levels[var])
+          ht, sprintf('%s (%s)', names(base_levels[var]), base_levels[var])
         ),
-        result[min_location:nrow(result),]
+        ht[min_location:nrow(ht),]
       )
     }
   }
 
-  result[[1]] <- gsub('<<HEADING>>', '', result[[1]], fixed = TRUE)
-  result[[1]] <- gsub('<</HEADING>>', '', result[[1]], fixed = TRUE)
-  result
+  ht[[1]] <- gsub('<<HEADING>>', '', ht[[1]], fixed = TRUE)
+  ht[[1]] <- gsub('<</HEADING>>', '', ht[[1]], fixed = TRUE)
+  ht
 }
 
 #' add_reg_labels
@@ -172,7 +171,7 @@ add_base_vars <- function(result, no_binary_heading = TRUE) {
 #'
 #' @export
 #'
-add_reg_labels <- function(result, var_list) {
+add_reg_labels <- function(ht, var_list) {
   var_list_ordered <- var_list[
     order(nchar(names(var_list)), names(var_list), decreasing = TRUE)
   ]

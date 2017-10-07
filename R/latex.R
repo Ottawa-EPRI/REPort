@@ -1,6 +1,6 @@
-output_latex <- function(result) {
-  attrs <- attributes(result)
-  ncols <- ncol(result)
+output_latex <- function(ht) {
+  attrs <- attributes(ht)
+  ncols <- ncol(ht)
   # FIXME: This assumes the longtable dcolumn environment. We may want some
   #        options here, although not necessarily for regression output.
   header <- ''
@@ -10,7 +10,7 @@ output_latex <- function(result) {
           function(x) {
             if (x != '') sprintf('\\multicolumn{1}{c}{%s}', x) else x
           },
-          xtable::sanitize(result[i, ])
+          xtable::sanitize(ht[i, ])
         )),
         collapse <- ' & '
       )
@@ -30,15 +30,15 @@ output_latex <- function(result) {
     header,
     '\\endhead',
     '\\bottomrule',
-    sprintf('\\multicolumn{%s}{r@{}}{continued \\ldots}\\\\', ncol(result)),
+    sprintf('\\multicolumn{%s}{r@{}}{continued \\ldots}\\\\', ncol(ht)),
     '\\endfoot',
     '\\endlastfoot'
   )
 
   output <- preamble
 
-  for (i in (attrs$heading_rows + 1):nrow(result)) {
-    row <- result[i, ]
+  for (i in (attrs$heading_rows + 1):nrow(ht)) {
+    row <- ht[i, ]
     row <- xtable::sanitize(row)
 
     row <- unlist(Map(
@@ -76,7 +76,7 @@ output_latex <- function(result) {
     row <- add_multicolumn[attrs$colspan[i, ] > 0]
     row <- gsub(' (\\*+)$', '^{\\1}', row)
 
-    if (all(attributes(result[i, ])$top_padding == 30)) {
+    if (all(attributes(ht[i, ])$top_padding == 30)) {
       row[1] <- paste0('\\noalign{\\vskip 4mm}', row[1])
     }
 
