@@ -90,11 +90,13 @@ add_base_vars <- function(ht, no_binary_heading = TRUE) {
       interaction_rx <- interaction
       for (i in seq_along(interaction_xlevels)) {
         if (is.null(interaction_xlevels[[i]])) {
-          interaction_rx[[i]] <- sprintf('(%s)',
-                                        Hmisc::escapeRegex(interaction_rx[[i]]))
+          interaction_rx[[i]] <- sprintf(
+            '(%s)', Hmisc::escapeRegex(interaction_rx[[i]])
+          )
         } else {
-          interaction_rx[[i]] <- sprintf('%s(.*)',
-                                        Hmisc::escapeRegex(interaction_rx[[i]]))
+          interaction_rx[[i]] <- sprintf(
+            '%s(.*)', Hmisc::escapeRegex(interaction_rx[[i]])
+          )
         }
       }
       rx_seek <- paste0(interaction_rx, collapse = ':')
