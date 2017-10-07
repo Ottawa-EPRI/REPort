@@ -176,8 +176,10 @@ add_reg_labels <- function(ht, var_list) {
     order(nchar(names(var_list)), names(var_list), decreasing = TRUE)
   ]
 
-  for (el in key_value(var_list_ordered)) {
-    result[[1]] <- gsub(el$key, el$value, result[[1]], fixed = TRUE)
+  for (i in seq_along(var_list_ordered)) {
+    key <- names(var_list_ordered)[i]
+    value <- var_list_ordered[[i]]
+    ht[[1]] <- gsub(key, value, ht[[1]], fixed = TRUE)
   }
-  result
+  ht
 }
