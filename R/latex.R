@@ -1,3 +1,11 @@
+#' add_reg_labels
+#'
+#' Output a huxtable table to LaTeX.
+#'
+#' @param ht A huxtable.
+#'
+#' @export
+#'
 output_latex <- function(ht) {
   attrs <- attributes(ht)
   ncols <- ncol(ht)
@@ -96,6 +104,15 @@ output_latex <- function(ht) {
   unlist(output)
 }
 
+#' add_latex_preamble
+#'
+#' Add a LaTeX preamble.
+#'
+#' @param output The vector of LaTeX lines to which to add the preamble to. It
+#'        is added to the beginning of the vector.
+#'
+#' @export
+#'
 add_latex_preamble <- function(output) {
   c(
     '\\documentclass[10pt]{article}',
@@ -115,6 +132,15 @@ add_latex_preamble <- function(output) {
   )
 }
 
+#' add_latex_end
+#'
+#' "Close" the LaTeX document.
+#'
+#' @param output The vector of LaTeX lines to which to add the closing lines to.
+#'        It is added to the beginning of the vector.
+#'
+#' @export
+#'
 add_latex_end <- function(output) {
   c(
     output,
