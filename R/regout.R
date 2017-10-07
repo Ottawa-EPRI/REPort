@@ -20,6 +20,18 @@ huxtable_headrow <- function(ht, heading) {
   huxtable::set_top_padding(heading_huxtable, 30)
   heading_huxtable
 }
+
+#' regout
+#'
+#' A wrapper around huxreg which allows specification of the number of initial
+#' heading rows. It also adds model term labels and xlevels as attributes.
+#'
+#' @param ... arguments to be passed to huxreg.
+#'
+#' @param heading_rows The number of rows which are headings.
+#'
+#' @export
+#'
 regout <- function(..., heading_rows = 1) {
   args <- convert_names_from_null(list(...))
   unnamed_args <- names(args) == ''
@@ -49,6 +61,16 @@ regout <- function(..., heading_rows = 1) {
   hux_table
 }
 
+#' add_base_vars
+#'
+#' Add base (omitted) variables as a heading row to the regression.
+#'
+#' @param ht A huxtable.
+#'
+#' @param no_binary_heading Do not add heading row for factors with 2 values.
+#'
+#' @export
+#'
 
 add_base_vars <- function(result, no_binary_heading = TRUE) {
   xlevels <- attributes(result)$xlevels
@@ -139,6 +161,17 @@ add_base_vars <- function(result, no_binary_heading = TRUE) {
   result
 }
 
+#' add_reg_labels
+#'
+#' Add regression labels.
+#'
+#' @param ht A huxtable.
+#'
+#' @param var_list A named list, where names are the original raw column names
+#'        and the values are the intended labels.
+#'
+#' @export
+#'
 add_reg_labels <- function(result, var_list) {
   var_list_ordered <- var_list[
     order(nchar(names(var_list)), names(var_list), decreasing = TRUE)
