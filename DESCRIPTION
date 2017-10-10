@@ -7,7 +7,7 @@ Description: A collection of table output functions to make life easier.
 Depends:
   R (>= 3.2.0)
 Imports:
-  huxtable (>= 1.0.0),
+  huxtable (>= 0.3.1),
   xtable (>= 1.8-2),
   Hmisc (>= 4.0-3)
 License: MIT + file LICENSE
