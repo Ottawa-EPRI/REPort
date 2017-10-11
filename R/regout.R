@@ -138,7 +138,7 @@ add_base_vars <- function(ht, no_binary_heading = TRUE) {
 
       # FIXME: no_binary_heading logic correct? Shoud padding be an option?
       if (all(Map(length, interaction_xlevels) <= 2) & no_binary_heading) {
-        top_padding(ht[min_location, ]) <- 30
+        huxtable::set_top_padding(ht[min_location, ], 30)
       } else {
         #if (any(Map(length, interaction_xlevels) > 2) & no_binary_heading) {
         ht <- rbind(
