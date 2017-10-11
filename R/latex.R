@@ -11,7 +11,7 @@ output_latex <- function(ht) {
   ncols <- ncol(ht)
   # FIXME: This assumes the longtable dcolumn environment. We may want some
   #        options here, although not necessarily for regression output.
-  header <- ''
+  header <- NULL
   for (i in 1:attrs$heading_rows) {
     current_header <- paste0(
         unlist(Map(
@@ -19,10 +19,8 @@ output_latex <- function(ht) {
             if (x != '') sprintf('\\multicolumn{1}{c}{%s}', x) else x
           },
           xtable::sanitize(ht[i, ])
-        )),
-        collapse <- ' & '
+        ))
       )
-    current_header <- paste(current_header, '\\\\ \\midrule')
     header <- c(header, current_header)
   }
 
@@ -33,11 +31,11 @@ output_latex <- function(ht) {
     ),
     sprintf('\\caption{%s}',  xtable::sanitize(attrs$caption)),
     sprintf('\\label{%s} \\\\',  xtable::sanitize(attrs$caption)),
-    header,
+    paste0(paste(header, collapse = ' & '), ' \\\\ \\midrule', collapse = ''),
     '\\endfirsthead',
     sprintf('\\caption*{%s} \\\\',
             xtable::sanitize(paste(attrs$caption, '(Continued)'))),
-    header,
+    paste0(paste(header, collapse = ' & '), ' \\\\ \\midrule', collapse = ''),
     '\\endhead',
     '\\bottomrule',
     sprintf('\\multicolumn{%s}{r@{}}{continued \\ldots}\\\\', ncol(ht)),
