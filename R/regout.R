@@ -163,7 +163,7 @@ add_base_vars <- function(ht, no_binary_heading = TRUE) {
     ht[[1]] <- gsub(rx_seek, '\\1', ht[[1]])
 
     if (length(xlevels[[var]]) <= 2 & no_binary_heading) {
-      top_padding(ht[min_location, ]) <- 30
+      huxtable::set_top_padding(ht[min_location, ], 30)
     }
     # FIXME: no_binary_heading logic correct? Padding as an option?
     if (length(xlevels[[var]]) > 2 & no_binary_heading) {
