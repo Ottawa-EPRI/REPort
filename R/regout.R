@@ -1,3 +1,10 @@
+modify_if_possible <- function(x) {
+  tryCatch(
+    Reduce(modifyList, x),
+    error = function(cond) return(x)
+  )
+}
+
 convert_names_from_null <- function(x) {
   if(is.null(names(x))) {
     names(x) <- rep("", length(x))
@@ -43,18 +50,31 @@ regout <- function(..., heading_rows = 1) {
 
   hux_table <- huxtable::set_tabular_environment(hux_table, 'longtable')
 
-  model_xlevels <- Map(function(x) x[['xlevels']], model_args)
-  if (length(model_xlevels == 1)) {
-    attributes(hux_table)$xlevels <- model_xlevels[[1]]
-  } else if (length(model_xlevels) > 1) {
-    attributes(hux_table)$xlevels <- Reduce(modifyList, model_xlevels)
-  }
-
-  term_labels <- Map(
-    function(x) attributes(x$terms)$term.labels,
+  xl <- Map(
+    function(x) {
+      if (is.null(x$xlevels)) {
+        Map(function(y) if (!is.atomic(y)) y$xlevels, x)
+      } else {
+        x$xlevels
+      }
+    },
     model_args
   )
-  attributes(hux_table)$term_labels <- unique(unlist(term_labels))
+  xl <- modify_if_possible(Map(function(x) modify_if_possible(x), xl))
+  attributes(hux_table)$xlevels <- xl
+
+  tl <- Map(
+    function(x) {
+      if (is.null(attributes(x$terms)$term.labels)) {
+        Map(function(y) attributes(y$terms)$term.labels, x)
+      } else {
+        attributes(x$terms)$term.labels
+      }
+    },
+    model_args
+  )
+  tl <- unique(unlist(tl, use.names = FALSE))
+  attributes(hux_table)$term_labels <- tl
 
   attributes(hux_table)$heading_rows <- heading_rows
 
