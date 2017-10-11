@@ -27,8 +27,10 @@ output_latex <- function(ht) {
   }
 
   preamble <- c(
-    paste0(sprintf('\\begin{longtable}{l%s}',
-           rep('D{.}{.}{6}', ncols - 1), collapse = '')),
+    sprintf(
+      '\\begin{longtable}{l%s}',
+      paste0(rep('D{.}{.}{6}', ncols - 1), collapse = '')
+    ),
     sprintf('\\caption{%s}',  xtable::sanitize(attrs$caption)),
     sprintf('\\label{%s} \\\\',  xtable::sanitize(attrs$caption)),
     header,
